@@ -198,7 +198,7 @@ swift package show-dependencies 2>&1 | spmsift
 
 ## Requirements
 
-- Swift 6.2+
+- Swift 6.0+
 - macOS 13.0+
 
 ## Contributing
