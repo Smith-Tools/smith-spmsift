@@ -8,7 +8,7 @@ on:
 
 jobs:
   test:
-    runs-on: macos-13  # Use more stable macOS 13 runner
+    runs-on: macos-latest  # Use macOS 15 arm64 runner for latest Swift toolchain
 
     steps:
     - uses: actions/checkout@v4
