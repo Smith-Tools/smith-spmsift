@@ -16,6 +16,9 @@ let package = Package(
             dependencies: [
                 .product(name: "ArgumentParser", package: "swift-argument-parser"),
                 .product(name: "Collections", package: "swift-collections")
+            ],
+            resources: [
+                .copy("../../spmsift.1")
             ]
         ),
         .testTarget(

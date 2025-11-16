@@ -1,0 +1,169 @@
+.\"
+.\" Man page for spmsift
+.\" Generated with Claude Code
+.\"
+.TH SPMSIFT 1 "November 2024" "spmsift 1.0.0" "User Commands"
+.SH NAME
+spmsift \- Context-efficient Swift Package Manager analysis tool
+.SH SYNOPSIS
+.B spmsift
+.RI [ OPTIONS ]
+.RI < input
+.sp
+.B swift package
+.I command
+.B | spmsift
+.RI [ OPTIONS ]
+.SH DESCRIPTION
+.sp
+spmsift converts verbose Swift Package Manager output into structured, minimal-context JSON designed for Claude agents and AI development workflows. It processes the output of various Swift Package Manager commands and provides analysis in multiple formats.
+.sp
+The tool reads from standard input and outputs structured analysis that includes package information, dependencies, targets, and any issues detected during package operations.
+.SH OPTIONS
+.TP
+.BR \-f ", " \-\-format "=\fIFORMAT\fP"
+Output format. Valid options are:
+.RS
+.IP \fBjson\fP 1i
+Structured JSON output (default)
+.IP \fBsummary\fP 1i
+Brief summary with counts
+.IP \fBdetailed\fP 1i
+Detailed JSON with additional context
+.RE
+.TP
+.BR \-s ", " \-\-severity "=\fISEVERITY\fP"
+Minimum issue severity to include. Valid options are:
+.RS
+.IP \fBinfo\fP 1i
+Include all issues (default)
+.IP \fBwarning\fP 1i
+Warnings and above
+.IP \fBerror\fP 1i
+Errors and above
+.IP \fBcritical\fP 1i
+Critical issues only
+.RE
+.TP
+.BR \-v ", " \-\-verbose
+Include raw output for debugging purposes.
+.TP
+.BR \-\-metrics
+Enable performance metrics including parse time, complexity analysis, and estimated index time.
+.TP
+.BR \-\-target "=\fITARGET\fP"
+Filter analysis to a specific target name.
+.TP
+.BR \-h ", " \-\-help
+Display help information and exit.
+.SH EXAMPLES
+.sp
+Basic package analysis:
+.sp
+.RS
+.nf
+.ft C
+swift package dump-package | spmsift
+.ft P
+.RE
+.sp
+Summary format output:
+.sp
+.RS
+.nf
+.ft C
+swift package show-dependencies | spmsift --format summary
+.ft P
+.RE
+.sp
+Detailed analysis with metrics:
+.sp
+.RS
+.nf
+.ft C
+swift package resolve | spmsift --format detailed --metrics
+.ft P
+.RE
+.sp
+Target-specific filtering:
+.sp
+.RS
+.nf
+.ft C
+swift package dump-package | spmsift --target MyLibrary
+.ft P
+.RE
+.sp
+Warning-level filtering:
+.sp
+.RS
+.nf
+.ft C
+swift package update | spmsift --severity warning
+.ft P
+.RE
+.SH SUPPORTED COMMANDS
+.sp
+spmsift can process output from the following Swift Package Manager commands:
+.RS
+.IP \fBdump-package\fP 1i
+Package structure and dependencies
+.IP \fBshow-dependencies\fP 1i
+Dependency tree information
+.IP \fBresolve\fP 1i
+Package resolution output
+.IP \fBdescribe\fP 1i
+Package description
+.IP \fBupdate\fP 1i
+Package update operations
+.RE
+.SH OUTPUT FORMAT
+.sp
+The JSON output includes the following fields:
+.RS
+.IP \fBcommand\fP 1i
+The Swift Package Manager command that generated the input
+.IP \fBsuccess\fP 1i
+Whether the operation completed successfully
+.IP \fBtargets\fP 1i
+Array of package targets (if applicable)
+.IP \fBdependencies\fP 1i
+Array of package dependencies (if applicable)
+.IP \fBissues\fP 1i
+Array of detected issues with severity levels
+.IP \fBmetrics\fP 1i
+Performance metrics (if --metrics is enabled)
+.IP \fBrunOutput\fP 1i
+Raw input (if --verbose is enabled)
+.RE
+.SH EXIT STATUS
+.sp
+.sp
+.RS
+.IP \fB0\fP
+Analysis completed successfully
+.IP \fB1\fP
+Tool failure or error
+.RE
+.SH ENVIRONMENT
+.sp
+.sp
+spmsift reads from standard input and writes to standard output. It detects when input is piped and will display usage information if called without input.
+.SH FILES
+.sp
+.sp
+The tool does not create or modify any files.
+.SH DIAGNOSTICS
+.sp
+spmsift will report parsing errors and issues detected in the Swift Package Manager output through the issues array in the JSON output.
+.SH SEE ALSO
+.sp
+.BR swift-package (1),
+.BR swift (1),
+.BR jq (1)
+.SH AUTHOR
+.sp
+spmsift was written by Claude Code for Swift Package Manager analysis workflows.
+.SH BUGS
+.sp
+Please report bugs at: https://github.com/elkraneo/spmsift/issues

@@ -12,6 +12,7 @@ class Spmsift < Formula
   def install
     system "swift", "build", "-c", "release", "--product", "spmsift"
     bin.install ".build/release/spmsift"
+    man1.install "spmsift.1"
   end
 
   test do
