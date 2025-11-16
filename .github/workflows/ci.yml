@@ -1,0 +1,50 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: macos-14
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Select Xcode
+      run: sudo xcode-select -switch /Applications/Xcode_16.2.app
+
+    - name: Build
+      run: swift build -c release
+
+    - name: Test
+      run: swift test --enable-code-coverage
+
+    - name: Test CLI functionality
+      run: |
+        # Test dump-package parsing
+        swift package dump-package | .build/release/spmsift --format summary
+
+        # Test show-dependencies parsing
+        swift package show-dependencies | .build/release/spmsift --format summary
+
+        # Test error handling
+        echo '{"invalid": json' | .build/release/spmsift | jq '.issues'
+
+    - name: Performance Test
+      run: |
+        # Measure parse time
+        time swift package dump-package | .build/release/spmsift --metrics > /dev/null
+
+    - name: Context Efficiency Test
+      run: |
+        ORIGINAL_SIZE=$(swift package dump-package | wc -c | tr -d ' ')
+        SPMSIFT_SIZE=$(swift package dump-package | .build/release/spmsift --format summary | wc -c | tr -d ' ')
+        SAVINGS=$(( (ORIGINAL_SIZE - SPMSIFT_SIZE) * 100 / ORIGINAL_SIZE ))
+        echo "Context savings: $SAVINGS%"
+        if [ $SAVINGS -lt 90 ]; then
+          echo "Error: Context savings too low"
+          exit 1
+        fi
