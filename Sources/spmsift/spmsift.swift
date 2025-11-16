@@ -29,6 +29,9 @@ struct SPMSift: ParsableCommand {
     @Flag(name: .long, help: "Enable performance metrics")
     var metrics: Bool = false
 
+    @Option(name: .long, help: "Filter analysis to a specific target name")
+    var target: String?
+
     mutating func run() throws {
         let startTime = CFAbsoluteTimeGetCurrent()
 
@@ -48,7 +51,7 @@ struct SPMSift: ParsableCommand {
         }
 
         let parseStartTime = CFAbsoluteTimeGetCurrent()
-        let result = try parseInput(output)
+        let result = try parseInput(output, targetFilter: target)
         let parseEndTime = CFAbsoluteTimeGetCurrent()
 
         // Add metrics if requested
@@ -86,7 +89,7 @@ struct SPMSift: ParsableCommand {
         throw ExitCode.success
     }
 
-    private func parseInput(_ input: String) throws -> PackageAnalysis {
+    private func parseInput(_ input: String, targetFilter: String?) throws -> PackageAnalysis {
         let commandType = CommandDetector.detectCommandType(from: input)
         let hasError = CommandDetector.hasErrorOutput(input)
 
@@ -101,15 +104,15 @@ struct SPMSift: ParsableCommand {
 
         switch commandType {
         case .dumpPackage:
-            return try DumpPackageParser().parse(input)
+            return try DumpPackageParser().parse(input, targetFilter: targetFilter)
         case .showDependencies:
-            return try ShowDependenciesParser().parse(input)
+            return try ShowDependenciesParser().parse(input, targetFilter: targetFilter)
         case .resolve:
-            return try ResolveParser().parse(input)
+            return try ResolveParser().parse(input, targetFilter: targetFilter)
         case .describe:
-            return try DescribeParser().parse(input)
+            return try DescribeParser().parse(input, targetFilter: targetFilter)
         case .update:
-            return try UpdateParser().parse(input)
+            return try UpdateParser().parse(input, targetFilter: targetFilter)
         case .unknown:
             return PackageAnalysis(
                 command: .unknown,

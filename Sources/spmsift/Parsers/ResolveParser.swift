@@ -3,7 +3,28 @@ import Foundation
 public struct ResolveParser {
     public init() {}
 
-    public func parse(_ input: String) throws -> PackageAnalysis {
+    public func parse(_ input: String, targetFilter: String? = nil) throws -> PackageAnalysis {
+        // Note: resolve command doesn't provide target-specific information
+        // If targetFilter is specified, we return empty results but note this limitation
+        if targetFilter != nil {
+            return PackageAnalysis(
+                command: .resolve,
+                success: true,
+                targets: TargetAnalysis(
+                    count: 0,
+                    filteredTarget: targetFilter,
+                    targets: []
+                ),
+                dependencies: DependencyAnalysis(count: 0, external: [], local: [], circularImports: false),
+                issues: [PackageIssue(
+                    type: .unknown,
+                    severity: .info,
+                    target: targetFilter,
+                    message: "resolve command doesn't support target-specific analysis. Use dump-package for target filtering."
+                )]
+            )
+        }
+
         let lines = input.components(separatedBy: .newlines)
         var issues: [PackageIssue] = []
         var resolvedPackages: [String] = []

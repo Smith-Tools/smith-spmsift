@@ -5,6 +5,27 @@ import Testing
 struct ShowDependenciesParserTests {
     let parser = ShowDependenciesParser()
 
+    @Test("ShowDependencies parser returns empty results with target filter")
+    func parseWithTargetFilter() throws {
+        let input = """
+        Dependencies:
+        ├─ SomeDependency (1.2.3)
+        └─ AnotherDependency (4.5.6)
+        """
+
+        let result = try parser.parse(input, targetFilter: "SomeTarget")
+
+        #expect(result.command == .showDependencies)
+        #expect(result.success)
+        #expect(result.targets?.count == 0)
+        #expect(result.targets?.filteredTarget == "SomeTarget")
+        #expect(result.dependencies?.count == 0)
+        #expect(result.issues.count == 1)
+        #expect(result.issues.first?.type == .unknown)
+        #expect(result.issues.first?.target == "SomeTarget")
+        #expect(result.issues.first?.message.contains("doesn't support target-specific") == true)
+    }
+
     @Test("Parser correctly extracts simple dependency tree")
     func parseSimpleDependencies() throws {
         let input = """

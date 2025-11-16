@@ -4,12 +4,33 @@ import Collections
 public struct ShowDependenciesParser {
     public init() {}
 
-    public func parse(_ input: String) throws -> PackageAnalysis {
+    public func parse(_ input: String, targetFilter: String? = nil) throws -> PackageAnalysis {
         let lines = input.components(separatedBy: .newlines)
         var issues: [PackageIssue] = []
         var externalDependencies: [ExternalDependency] = []
         var localDependencies: [LocalDependency] = []
         var circularImports = false
+
+        // Note: show-dependencies doesn't provide target-specific information
+        // If targetFilter is specified, we return empty results but note this limitation
+        if targetFilter != nil {
+            return PackageAnalysis(
+                command: .showDependencies,
+                success: true,
+                targets: TargetAnalysis(
+                    count: 0,
+                    filteredTarget: targetFilter,
+                    targets: []
+                ),
+                dependencies: DependencyAnalysis(count: 0, external: [], local: [], circularImports: false),
+                issues: [PackageIssue(
+                    type: .unknown,
+                    severity: .info,
+                    target: targetFilter,
+                    message: "show-dependencies command doesn't support target-specific analysis. Use dump-package for target filtering."
+                )]
+            )
+        }
 
         // Parse tree structure
         let (dependencies, localDeps, parsedIssues) = parseDependencyTree(lines)

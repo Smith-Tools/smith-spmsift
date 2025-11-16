@@ -36,13 +36,31 @@ public struct TargetAnalysis: Codable {
     public let platforms: [String]
     public let executables: [String]
     public let libraries: [String]
+    public let filteredTarget: String?
+    public let targets: [TargetDetail]?
 
-    public init(count: Int, hasTestTargets: Bool = false, platforms: [String] = [], executables: [String] = [], libraries: [String] = []) {
+    public init(count: Int, hasTestTargets: Bool = false, platforms: [String] = [], executables: [String] = [], libraries: [String] = [], filteredTarget: String? = nil, targets: [TargetDetail]? = nil) {
         self.count = count
         self.hasTestTargets = hasTestTargets
         self.platforms = platforms
         self.executables = executables
         self.libraries = libraries
+        self.filteredTarget = filteredTarget
+        self.targets = targets
+    }
+}
+
+public struct TargetDetail: Codable {
+    public let name: String
+    public let type: String
+    public let platforms: [String]
+    public let dependencies: [String]
+
+    public init(name: String, type: String, platforms: [String] = [], dependencies: [String] = []) {
+        self.name = name
+        self.type = type
+        self.platforms = platforms
+        self.dependencies = dependencies
     }
 }
 
