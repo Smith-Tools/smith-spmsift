@@ -1,33 +1,25 @@
-# spmsift
+# smith-spmsift - Swift Package Manager Analysis
 
-Context-efficient Swift Package Manager analysis tool for Claude agents and AI development workflows.
+> **Context-efficient Swift Package Manager analysis for development and agentic workflows.**
 
-## Overview
+Tool converting verbose Swift Package Manager output into structured, minimal-context JSON. Reduces output by 95%+ while preserving all diagnostic information for complex dependency analysis.
 
-spmsift converts verbose Swift Package Manager output into structured, minimal-context JSON designed specifically for Claude agents, saving >95% of context while preserving all diagnostic information.
+## 🎯 What is smith-spmsift?
 
-## Problem It Solves
+smith-spmsift solves the context bloat problem:
 
-Swift Package Manager commands output hundreds of lines of verbose information:
-- `swift package dump-package` → 200+ lines of JSON manifest
-- `swift package show-dependencies` → Tree with 100+ dependencies
+**Problem:** SPM commands generate massive output:
+- `swift package dump-package` → 200+ lines of JSON
+- `swift package show-dependencies` → 100+ dependency tree
 - `swift package resolve` → Verbose resolution logs
 
-For Claude agents working with complex packages like Scroll (61 targets, 17 dependencies), this consumes massive context budgets and makes analysis inefficient.
-
-## Solution
-
-spmsift filters the signal from the noise:
-
+**Solution:** Structured JSON output with 95%+ context savings:
 ```bash
 swift package dump-package | spmsift
 # → {"targets": 61, "dependencies": 17, "issues": []}
-
-swift package show-dependencies | spmsift
-# → {"dependencies": [{"name": "TCA", "version": "1.23.1"}], "circular": false}
 ```
 
-Context savings: 95%+ while preserving all diagnostic information.
+**Result:** Complex packages like Scroll (61 targets, 17 dependencies) analyzed in minimal context.
 
 ## Installation
 
@@ -165,63 +157,89 @@ swift package dump-package | spmsift --verbose
 }
 ```
 
-## Integration
+## 🔄 Integration with Smith Tools
+
+smith-spmsift works with the complete Smith Tools ecosystem:
+
+- **smith-skill** - Architectural validation
+- **smith-core** - Universal Swift patterns
+- **smith-sbsift** - Swift build analysis
+- **sosumi-skill** - Apple documentation
+
+**Usage Pattern:**
+```
+Package issues? → smith-spmsift
+Build errors? → smith-sbsift
+Architecture? → smith-skill
+API reference? → sosumi-skill
+```
 
 ### Smith Skill Integration
 
 ```bash
 #!/bin/bash
-# spm-analyze.sh
-swift package dump-package 2>&1 | spmsift
-swift package show-dependencies 2>&1 | spmsift
+# Used by smith-skill validators
+swift package dump-package 2>&1 | spmsift --format json
+swift package show-dependencies 2>&1 | spmsift --analyze
 ```
 
-### GitHub Actions
+### GitHub Actions Example
 
 ```yaml
-- name: Analyze Package
+- name: Analyze Package Structure
   run: |
     swift package dump-package | spmsift --format summary > package-analysis.json
-    swift package show-dependencies | spmsift --format summary >> package-analysis.json
+    swift package show-dependencies | spmsift --format json >> deps.json
 ```
 
-## Performance
+## 📊 Performance
 
-| Metric          | Before spmsift | After spmsift |
-|-----------------|----------------|---------------|
-| Output Size     | 200KB+         | < 5KB         |
-| Context Usage   | High           | Minimal       |
-| Parse Time      | N/A            | < 1ms         |
-| Error Detection | Manual         | Automated     |
+| Metric | Before spmsift | After spmsift | Savings |
+|--------|--------|----------|---------|
+| Output Size | 200KB+ | < 5KB | 95%+ |
+| Context Usage | High | Minimal | 95%+ |
+| Parse Time | N/A | < 1ms | Instant |
+| Error Detection | Manual | Automated | 100% |
 
-## Features
+## ✨ Features
 
-- **Pipe-based interface** like xcsift for seamless integration
-- **Multi-command support**: dump-package, show-dependencies, resolve, describe, update
-- **Structured JSON output** for programmatic analysis
-- **Context-optimized output** < 5KB for any package size
-- **Error-aware** with detailed issue detection
-- **Performance-focused** < 1ms parse time for large packages
-- **Configurable output** formats and severity filtering
-- **Built-in metrics** for performance analysis
+- **Pipe-based interface** - Seamless integration like xcsift
+- **Multi-command support** - dump-package, show-dependencies, resolve, describe, update
+- **Structured JSON output** - Programmatic analysis and automation
+- **Context-optimized** - < 5KB output for any package size
+- **Error detection** - Identifies circular dependencies, version conflicts
+- **High performance** - < 1ms parse time for large packages
+- **Configurable output** - JSON, summary, detailed formats
+- **Built-in metrics** - Performance and complexity analysis
 
-## Requirements
+## 📋 Requirements
 
-- Swift 6.0+
-- macOS 13.0+
+- **Swift 5.5+**
+- **macOS 11.0+** (Monterey or later)
 
-## Contributing
+## 🔗 Related Tools
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+- **[smith-sbsift](../smith-sbsift/)** - Swift build analysis
+- **[smith-skill](../smith-skill/)** - Architecture validation
+- **[smith-core](../smith-core/)** - Universal patterns
+- **[xcsift](https://github.com/ldomaradzki/xcsift)** - Xcode build output analysis
 
-## License
+## 🤝 Contributing
 
-MIT License - see LICENSE file for details.
+Contributions welcome! Please:
 
-## Related Tools
+1. Report SPM analysis issues with examples
+2. Suggest new output formats
+3. Improve dependency resolution detection
+4. Add integration examples
+5. Follow commit message guidelines (see main README)
 
-- [xcsift](https://github.com/ldomaradzki/xcsift) - Similar tool for Xcode build output
+## 📄 License
+
+MIT - See [LICENSE](LICENSE) for details
 
 ---
 
-**spmsift**: Making Swift Package Manager analysis AI-friendly.
+**smith-spmsift - Making Swift Package Manager analysis AI-friendly**
+
+*Last updated: November 17, 2025*
