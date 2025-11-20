@@ -1,0 +1,137 @@
+.\" Smith SPM Sift Manual Page
+.\" Part of Smith Framework build tools
+.TH SMITH-SPMSIFT 1 "November 2024" "Smith Framework" "Smith Tools Manual"
+.SH NAME
+smith-spmsift \- Swift Package Manager build analysis and validation tool
+.SH SYNOPSIS
+.B smith-spmsift
+[\fIOPTIONS\fR]
+.RS 4
+.B smith-spmsift analyze
+[\fIpath\fR] [\fIOPTIONS\fR]
+.RS 4
+.B smith-spmsift parse
+[\fIOPTIONS\fR]
+.RS 4
+.B smith-spmsift validate
+[\fIpath\fR] [\fIOPTIONS\fR]
+.RS 4
+.B smith-spmsift optimize
+[\fIpath\fR] [\fIOPTIONS\fR]
+.RE
+.RE
+.RE
+.RE
+.SH DESCRIPTION
+\fBsmith-spmsift\fR provides comprehensive Swift Package Manager analysis with Smith Framework integration. It converts verbose SPM output into structured, minimal-context JSON designed for Claude agents and AI development workflows.
+.PP
+The tool specializes in detecting build hangs, analyzing dependency graphs, and identifying branch dependencies that commonly cause build failures.
+.SH SUBCOMMANDS
+.TP
+\fBanalyze\fR \fIpath\fR [\fIOPTIONS\fR]
+Comprehensive SPM package analysis. Performs dependency graph analysis, build complexity assessment, and risk identification.
+.TP
+\fBparse\fR [\fIOPTIONS\fR]
+Parse Swift Package Manager output from stdin. Converts verbose SPM output into structured JSON or human-readable format.
+.TP
+\fBvalidate\fR \fIpath\fR [\fIOPTIONS\fR]
+Validate SPM package configuration and dependencies. Enhanced with branch dependency detection.
+.TP
+\fBoptimize\fR \fIpath\fR [\fIOPTIONS\fR]
+Optimize SPM package configuration and build performance.
+.SH OPTIONS
+.SS Analyze Command
+.TP
+\fB\-\-json\fR
+Output analysis results in JSON format for AI workflows
+.TP
+\fB\-\-verbose\fR
+Include detailed diagnostics and progress information
+.TP
+\fB\-\-hang\-detection\fR
+Perform specialized hang detection analysis
+.TP
+\fB\-\-metrics\fR
+Include performance metrics and timing analysis
+.SS Validate Command
+.TP
+\fB\-\-deep\fR
+Perform deep validation including dependency resolution
+.TP
+\fB\-\-check\-resolved\fR
+Check Package.resolved for branch dependencies (NEW)
+.TP
+\fB\-\-flag\-branch\-deps\fR
+Flag branch dependencies as anti-patterns (NEW)
+.SS Parse Command
+.TP
+\fB\-f, \-\-format\fR \fIFORMAT\fR
+Output format: \fIjson\fR, \fIsummary\fR, or \fIdetailed\fR
+.TP
+\fB\-v, \-\-verbose\fR
+Include raw SPM output for debugging
+.SS Optimize Command
+.TP
+\fB\-\-apply\fR
+Apply optimizations automatically
+.SH EXAMPLES
+.PP
+Basic package analysis:
+.RS 4
+.nf
+smith-spmsift analyze
+.fi
+.RE
+.PP
+Detect branch dependencies (common hang cause):
+.RS 4
+.nf
+smith-spmsift validate --check-resolved --flag-branch-deps
+.fi
+.RE
+.PP
+JSON output for AI workflows:
+.RS 4
+.nf
+smith-spmsift analyze --json > analysis.json
+.fi
+.RE
+.PP
+Parse SPM build output:
+.RS 4
+.nf
+swift build | smith-spmsift parse
+.fi
+.RE
+.SH BRANCH DEPENDENCY DETECTION
+The enhanced validate command can identify branch dependencies, which are the most common cause of Swift Package Manager build hangs.
+.PP
+When a Package.resolved contains dependencies like:
+.RS 4
+.nf
+{
+  "identity": "problematic-lib",
+  "state": {
+    "branch": "main"
+  }
+}
+.fi
+.RE
+.PP
+smith-spmsift will flag this as an anti-pattern and recommend pinning to specific versions.
+.SH EXIT STATUS
+.TP
+0
+Success
+.TP
+1
+General error or build failure detected
+.TP
+2
+Invalid arguments or configuration
+.SH SEE ALSO
+.BR smith-cli (1), smith-xcsift (1), swift-package (1)
+.SH AUTHORS
+Smith Framework - Enhanced Swift build analysis tools
+.SH VERSION
+Smith Framework v2.0.0
