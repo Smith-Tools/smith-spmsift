@@ -4,15 +4,16 @@ import Foundation
 @main
 struct SPMSift: ParsableCommand {
     static let configuration = CommandConfiguration(
+        commandName: "smith-spmsift",
         abstract: "Context-efficient Swift Package Manager analysis tool",
         discussion: """
-        spmsift converts verbose Swift Package Manager output into structured,
+        smith-spmsift converts verbose Swift Package Manager output into structured,
         minimal-context JSON designed for Claude agents and AI development workflows.
 
         Examples:
-          swift package dump-package | spmsift
-          swift package show-dependencies | spmsift --format summary
-          swift package resolve | spmsift --format detailed
+          swift package dump-package | smith-spmsift
+          swift package show-dependencies | smith-spmsift --format summary
+          swift package resolve | smith-spmsift --format detailed
         """,
         version: "1.0.0"
     )
@@ -37,8 +38,8 @@ struct SPMSift: ParsableCommand {
 
         // Read from stdin if piped, otherwise exit with help
         if isatty(STDIN_FILENO) != 0 {
-            print("spmsift: No input detected. Pipe Swift Package Manager output to spmsift.")
-            print("Usage: swift package <command> | spmsift")
+            print("smith-spmsift: No input detected. Pipe Swift Package Manager output to smith-spmsift.")
+            print("Usage: swift package <command> | smith-spmsift")
             throw ExitCode.failure
         }
 

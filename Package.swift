@@ -4,7 +4,7 @@
 import PackageDescription
 
 let package = Package(
-    name: "spmsift",
+    name: "smith-spmsift",
     platforms: [.macOS(.v13)],
     dependencies: [
         .package(url: "https://github.com/apple/swift-argument-parser", from: "1.3.0"),
@@ -12,7 +12,7 @@ let package = Package(
     ],
     targets: [
         .executableTarget(
-            name: "spmsift",
+            name: "smith-spmsift",
             dependencies: [
                 .product(name: "ArgumentParser", package: "swift-argument-parser"),
                 .product(name: "Collections", package: "swift-collections")
@@ -22,8 +22,8 @@ let package = Package(
             ]
         ),
         .testTarget(
-            name: "spmsiftTests",
-            dependencies: ["spmsift"],
+            name: "smith-spmsiftTests",
+            dependencies: ["smith-spmsift"],
             path: "Tests"
         ),
     ]
